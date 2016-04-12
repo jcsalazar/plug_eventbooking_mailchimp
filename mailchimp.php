@@ -65,14 +65,14 @@ class plgEventBookingMailchimp extends JPlugin
 		$event = JTable::getInstance('EventBooking', 'Event');
 		$event->load($row->event_id);
 		$params  = new JRegistry($event->params);
-		$listIds = $params->get('mailchimp_list_ids', '');
+		$listIds = $params->get('mailchimp_list_ids', '');		/* Get Event Location*/		$location = JTable::getInstance('EventBooking', 'Location');		$location->load($event->location_id);				/* Get Instructor Email From Created_By on event*/		$db               = JFactory::getDbo();		$query            = $db->getQuery(true);				$query->clear();		$query->select('a.*')				->from('#__users AS a')				->innerJoin('#__eb_events AS b ON a.id = b.created_by')				->where('b.id=' . $row->event_id);				$db->setQuery($query);				$rowuser = $db->loadObject();				
 		if ($listIds != '')
 		{
 			$listIds = explode(',', $listIds);
 			if (count($listIds))
 			{
 				require_once dirname(__FILE__) . '/api/MailChimp.php';
-				$mailchimp = new MailChimp($this->params->get('api_key'));
+				$mailchimp = new MailChimp($this->params->get('api_key'));				
 				foreach ($listIds as $listId)
 				{
 					if ($listId)
@@ -80,7 +80,7 @@ class plgEventBookingMailchimp extends JPlugin
 						$mailchimp->call('lists/subscribe', array(
 							'id'                => $listId,
 							'email'             => array('email' => $row->email),
-							'merge_vars'        => array('FNAME' => $row->first_name, 'LNAME' => $row->last_name),
+							'merge_vars'        => array('FNAME' => $row->first_name, 'LNAME' => $row->last_name,'MMERGE3'  => $event->title,'MMERGE4'  => $event->event_date														,'MMERGE5'  => $row->event_id . $row->registration_code														,'MMERGE6'  => 'No'														,'MMERGE7'  => 'No'														,'MMERGE8'  => 'No'														,'MMERGE9'  => $location->name . ' , ' . $location->address . ' , ' . $location->city . ' , ' . $location->state . ' ' . $location->zip 														,'MMERGE10'  => $event->event_date														,'MMERGE11'  => $rowuser->email														),
 							'double_optin'      => false,
 							'update_existing'   => true,
 							'replace_interests' => false,
