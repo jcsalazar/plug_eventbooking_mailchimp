@@ -65,7 +65,7 @@ class plgEventBookingMailchimp extends JPlugin
 		$event = JTable::getInstance('EventBooking', 'Event');
 		$event->load($row->event_id);
 		$params  = new JRegistry($event->params);
-		$listIds = $params->get('mailchimp_list_ids', '');		/* Get Event Location*/		$location = JTable::getInstance('EventBooking', 'Location');		$location->load($event->location_id);				/* Get Instructor Email From Created_By on event*/		$db               = JFactory::getDbo();		$query            = $db->getQuery(true);				$query->clear();		$query->select('a.*')				->from('#__users AS a')				->innerJoin('#__eb_events AS b ON a.id = b.created_by')				->where('b.id=' . $row->event_id);				$db->setQuery($query);				$rowuser = $db->loadObject();				
+		$listIds = $params->get('mailchimp_list_ids', 'f40eb1f47e');		/* Get Event Location*/		$location = JTable::getInstance('EventBooking', 'Location');		$location->load($event->location_id);				/* Get Instructor Email From Created_By on event*/		$db               = JFactory::getDbo();		$query            = $db->getQuery(true);				$query->clear();		$query->select('a.*')				->from('#__users AS a')				->innerJoin('#__eb_events AS b ON a.id = b.created_by')				->where('b.id=' . $row->event_id);				$db->setQuery($query);				$rowuser = $db->loadObject();				
 		if ($listIds != '')
 		{
 			$listIds = explode(',', $listIds);
